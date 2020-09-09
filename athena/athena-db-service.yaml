@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    db: athena-db
+  name: athena-db
+spec:
+  type: LoadBalancer
+  ports:
+    - name: "1434"
+      port: 1434
+      targetPort: 1433
+  selector:
+    db: athena-db
+status:
+  loadBalancer: {}

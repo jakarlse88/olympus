@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: athena-db
+  labels:
+    db: athena-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      db: athena-db
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        db: athena-db
+    spec:
+      containers:
+        - env:
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: MSSQL_PID
+              value: Express
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
+          image: mcr.microsoft.com/mssql/server:2017-latest
+          imagePullPolicy: ""
+          readinessProbe:
+            exec:
+              command:
+                - /opt/mssql-tools/bin/sqlcmd
+                - -USA
+                - -PMyC0m9l&xP@ssw0rd
+                - -Q
+                - SELECT 1
+          name: athena-db
+          ports:
+            - containerPort: 1433
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/opt/mssql
+              name: athena-db-sqldata
+            - mountPath: /var/opt/sql
+              name: athena-db-sqluser
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+        - name: athena-db-sqldata
+          persistentVolumeClaim:
+            claimName: athena-db-sqldata
+        - name: athena-db-sqluser
+          persistentVolumeClaim:
+            claimName: athena-db-sqluser
+status: {}

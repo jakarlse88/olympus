@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: peitho
+spec:
+    selector:
+        matchLabels:
+            app: peitho
+    replicas: 1
+    minReadySeconds: 15
+    strategy:
+        type: RollingUpdate
+        rollingUpdate:
+            maxUnavailable: 1
+            maxSurge: 1
+    template:
+        metadata:
+            labels:
+                app: peitho
+        spec:
+            containers:
+                - image: jakarlse88/peitho
+                  imagePullPolicy: Always
+                  name: peitho
+                  ports:
+                      - containerPort: 8080
+                      - containerPort: 8081
