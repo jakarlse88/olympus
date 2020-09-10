@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    infrastructure: hermes
+  name: hermes
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      infrastructure: hermes
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        infrastructure: hermes
+    spec:
+      containers:
+        - env:
+            - name: RABBITMQ_DEFAULT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: DEFAULT_PASS
+            - name: RABBITMQ_DEFAULT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: DEFAULT_USER
+            - name: RABBITMQ_NODENAME
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: NODENAME
+            - name: RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: PASSWORD
+            - name: RABBITMQ_USER
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: USER
+          image: rabbitmq
+          imagePullPolicy: ""
+          name: rabbitmq
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          resources: {}
+      hostname: hermes
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
