@@ -1,12 +1,12 @@
 apiVersion: v1
-kind: Pod                                            
+kind: Pod
 metadata:
-  name: olympus-frontend              
-  labels: 
-    app: olympus-frontend                    
-spec:                                              
+  name: peitho
+  labels:
+    app: peitho
+spec:
   containers:
     - image: jakarlse88/peitho
-      name: peitho                              
+      name: peitho
       ports:
-        - containerPort: 80   
+        - containerPort: 80

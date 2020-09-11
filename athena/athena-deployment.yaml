@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: athena
+  name: athena
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: athena
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: athena
+    spec:
+      containers:
+        - env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: Production
+            - name: ASPNETCORE_HTTPS_PORT
+              value: "8083"
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+              value: crypticpassword
+            - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+              value: /https/aspnetapp.pfx
+            - name: ASPNETCORE_URLS
+              value: https://+:443;http://+:80
+            - name: ConnectionStrings__DefaultConnection
+              value: Server=athena-db,1434;Initial Catalog=AthenaDb;User Id=sa;Password=MyC0m9l&xP@ssw0rd
+            - name: RabbitMQ__HostName
+              value: hermes
+            - name: RabbitMQ__Password
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: PASSWORD
+            - name: RabbitMQ__User
+              valueFrom:
+                secretKeyRef:
+                  name: hermes
+                  key: USER
+          image: jakarlse88/athena
+          imagePullPolicy: ""
+          name: athena
+          ports:
+            - containerPort: 80
+            - containerPort: 443
+          resources: {}
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes: null
+status: {}
